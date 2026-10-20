@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VXProjectX Panel Menu</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #121212;
+      color: rgb(255, 251, 0);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .menu {
+      position: relative;
+      /* background-image: url(https://file.hstatic.net/200000722513/file/hinh-nen-may-tinh-4k-61_fc6761ac4fce4569ac14522ec071013b_1024x1024.jpg); */
+      border-radius: 10px;
+      padding: 20px;
+      width: 300px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+      text-align: center;
+      overflow: hidden; /* Ensure canvas does not overflow */
+    }
+
+    h2 {
+      font-size: 24px;
+      background: linear-gradient(to right, #3cff00, #04c4ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 20px;
+    }
+
+    .category {
+      color: red;
+      margin: 10px 0;
+      font-weight: bold;
+    }
+
+    .menu-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 10px 0;
+      font-size: 16px;
+    }
+
+    input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      accent-color: red;
+      cursor: pointer;
+    }
+
+    .close-btn {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #ff0000;
+      border: none;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .close-btn:hover {
+      background-color: #cc0000;
+    }
+
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: -1; 
+      width: 100%;
+      height: 100%;
+    }
+    a{
+      margin-top: 10px;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="menu">
+    <canvas id="networkCanvas"></canvas> 
+    <h2>The X Panel V1 iOS VXProjectX</h2>
+    <div class="menu-item">
+      <label>AIMLOCK 75%/HS</label>
+      <input type="checkbox">
+    </div>
+    <div class="menu-item">
+      <label>BYPASS DATA/NEW</label>
+      <input type="checkbox">
+    </div>
+    <div class="menu-item">
+      <label>FIX BLACKLIST/NEW</label>
+      <input type="checkbox">
+    </div>
+    <div class="menu-item">
+      <label>BYPASS RAM/NEW</label>
+      <input type="checkbox">
+    </div>
+    <div class="menu-item">
+      <label>ANTI-DETECT/NEW</label>
+      <input type="checkbox">
+    </div>
+    <div class="menu-item">
+      <label>ANTI-REPORT/NEW</label>
+      <input type="checkbox">
+    </div>
+    <a href="freefiremax://" class="close-btn">OPEN FF MAX</a>
+    <a href="freefire://" class="close-btn">OPEN FF TH</a>
+
+  </div>
+
+  <script>
+
+    const canvas = document.getElementById('networkCanvas');
+    const ctx = canvas.getContext('2d');
+    const points = [];
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    class Point {
+      constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        this.vx = Math.random() * 0.2 - 0.1;
+        this.vy = Math.random() * 0.2 - 0.1;
+      }
+
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
+
+        // Bounce off the edges
+        if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+        if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+      }
+
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, 2, 0, Math.PI * 2, false);
+        ctx.fillStyle = "rgba(0, 17, 255, 0.5)";
+        ctx.fill();
+      }
+    }
+
+    function generatePoints() {
+      for (let i = 0; i < 100; i++) {
+        points.push(new Point(Math.random() * canvas.width, Math.random() * canvas.height));
+      }
+    }
+
+    function drawLines() {
+      for (let i = 0; i < points.length; i++) {
+        for (let j = i + 1; j < points.length; j++) {
+          const dx = points[i].x - points[j].x;
+          const dy = points[i].y - points[j].y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+
+          if (distance < 150) {
+            ctx.beginPath();
+            ctx.moveTo(points[i].x, points[i].y);
+            ctx.lineTo(points[j].x, points[j].y);
+            ctx.strokeStyle = `rgba(255, 0, 212, ${1 - distance / 150})`;
+
+            ctx.stroke();
+          }
+        }
+      }
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      points.forEach(point => {
+        point.update();
+        point.draw();
+      });
+
+      drawLines();
+      requestAnimationFrame(animate);
+    }
+
+    generatePoints();
+    animate();
+  </script>
+</body>
+</html>
